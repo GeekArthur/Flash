@@ -2,22 +2,28 @@ package main
 
 import (
 	"flash"
-	"fmt"
 	"net/http"
 )
 
 func main() {
 	server := flash.New()
 
-	server.GET("/", func(rw http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(rw, "Request URL: %s", req.URL.Path)
+	server.GET("/html", func(c *flash.Context) {
+		c.HTML(http.StatusOK, "<h1>Hello World</h1>")
 	})
 
-	server.GET("/header", func(rw http.ResponseWriter, req *http.Request) {
-		fmt.Fprintln(rw, "Header is:")
-		for key, value := range req.Header {
-			fmt.Fprintf(rw, "%s: %v\n", key, value)
-		}
+	server.GET("/string", func(c *flash.Context) {
+		testString := "Hello World"
+		c.String(http.StatusOK, "%s", testString)
+	})
+
+	server.GET("/json", func(c *flash.Context) {
+		c.JSON(http.StatusOK,
+			`{
+			Name: "Arthur",
+			Age: "20",
+			Occupation: "Softare Engineer",
+		}`)
 	})
 
 	server.Run("localhost:9999")
